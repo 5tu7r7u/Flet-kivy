@@ -32,15 +32,16 @@ jobs:
           pip install --upgrade setuptools wheel
           pip install -r requirements.txt
 
-      # Install Android SDK and Build Tools
-      - name: Install Android SDK Build Tools
+      # Install Android SDK Command-line Tools
+      - name: Install Android SDK Command-line Tools
         run: |
           sudo apt-get install -y wget unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          unzip commandlinetools-linux-8512546_latest.zip -d $ANDROID_HOME/cmdline-tools
-          yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses
-          $ANDROID_HOME/cmdline-tools/bin/sdkmanager "build-tools;30.0.3" "platforms;android-30"
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
+          unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
+          export PATH=$HOME/android-sdk/cmdline-tools/cmdline-tools/bin:$PATH
+          yes | sdkmanager --licenses
+          sdkmanager "build-tools;30.0.3" "platforms;android-30"
 
       # Install Buildozer
       - name: Install Buildozer
