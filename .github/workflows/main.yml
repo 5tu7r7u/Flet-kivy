@@ -29,8 +29,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y lib32z1 lib32ncurses6 libbz2-1.0 lib32stdc++6 openjdk-11-jdk
           python -m pip install --upgrade pip
-          pip install --upgrade setuptools wheel cython  # إضافة cython هنا
+          pip install --upgrade setuptools wheel
           pip install -r requirements.txt
+
+      # Install Android SDK and Build Tools
+      - name: Install Android SDK Build Tools
+        run: |
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
+          mkdir -p $ANDROID_HOME/cmdline-tools
+          unzip commandlinetools-linux-8512546_latest.zip -d $ANDROID_HOME/cmdline-tools
+          yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/bin/sdkmanager "build-tools;30.0.3" "platforms;android-30"
 
       # Install Buildozer
       - name: Install Buildozer
