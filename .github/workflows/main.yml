@@ -1,42 +1,55 @@
-name: CI
+name: CI Workflow
+
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # used to cache dependencies with a timeout
-      - name: Get Date
-        id: get-date
+      # Set up Python (في حال كنت تستخدم Python)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # تأكد من تحديد الإصدار المطلوب
+
+      # Install dependencies (إذا كان هناك ملف requirements.txt)
+      - name: Install dependencies
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Cache Buildozer global directory
-        uses: actions/cache@v2
-        with:
-          path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
+      # Run tests (تنفيذ الاختبارات)
+      - name: Run tests
+        run: |
+          pytest  # هنا تأكد من أن أمر الاختبار صحيح بناءً على البيئة الخاصة بك
 
-      - uses: actions/cache@v2
+      # رفع نتائج الاختبارات كأرتيفاكت (Artifact)
+      - name: Upload test results
+        uses: actions/upload-artifact@v3  # تحديث إلى v3
         with:
-          path: .buildozer
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+          name: test-results
+          path: ./path/to/test-results  # المسار إلى ملفات نتائج الاختبار
 
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: master
+  deploy:
+    needs: build  # يعتمد هذا الجزء على نجاح مرحلة البناء
+    runs-on: ubuntu-latest
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Deploy steps (هنا يمكنك إضافة الخطوات الخاصة بالنشر، إن وجدت)
+      - name: Deploy application
+        run: |
+          echo "Deploying application..."
