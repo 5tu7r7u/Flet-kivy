@@ -32,11 +32,10 @@ jobs:
           pip install --upgrade setuptools wheel
           pip install -r requirements.txt
 
-      # Install Android SDK and Build Tools
-      - name: Install Android SDK
+      # Install Buildozer
+      - name: Install Buildozer
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+          pip install buildozer
 
       # Build the Android APK
       - name: Build APK
