@@ -46,6 +46,23 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y aidl
 
+    - name: Verify Aidl installation
+      run: |
+        if ! command -v aidl &> /dev/null
+        then
+          echo "Aidl not found, attempting manual installation."
+          sudo apt-get install -y android-tools-adb android-tools-fastboot
+          if ! command -v aidl &> /dev/null
+          then
+            echo "Aidl still not found, please check your sources."
+            exit 1
+          else
+            echo "Aidl is installed."
+          fi
+        else
+          echo "Aidl is installed."
+        fi
+
     - name: Set up environment variables
       run: |
         echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
@@ -56,16 +73,6 @@ jobs:
         if [ ! -d "$HOME/android-sdk/cmdline-tools/latest" ]; then
           echo "SDK tools directory not found!"
           exit 1
-        fi
-
-    - name: Verify Aidl installation
-      run: |
-        if ! command -v aidl &> /dev/null
-        then
-          echo "Aidl not found, please install it."
-          exit 1
-        else
-          echo "Aidl is installed."
         fi
 
     - name: Remove existing Flet-kivy directory
