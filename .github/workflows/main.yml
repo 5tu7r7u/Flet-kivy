@@ -38,12 +38,17 @@ jobs:
         unzip commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk/cmdline-tools
         mkdir -p $HOME/android-sdk/cmdline-tools/latest
         mv $HOME/android-sdk/cmdline-tools/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30"
-        
+        ls -l $HOME/android-sdk/cmdline-tools/latest/bin  # التحقق من وجود sdkmanager
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30" || echo "Failed to run sdkmanager"
+
     - name: Set up environment variables
       run: |
         echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
         echo "export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/30.0.3:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
+
+    - name: Clone python-for-android repository
+      run: |
+        git clone --depth=1 https://github.com/kivy/python-for-android.git
 
     - name: Build with Buildozer
       run: |
