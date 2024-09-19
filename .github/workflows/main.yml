@@ -46,10 +46,10 @@ jobs:
         echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
         echo "export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/30.0.3:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
 
-    - name: Clone python-for-android repository
+    - name: Clone python_for_android repository
       run: |
-        git clone --depth=1 https://github.com/kivy/python-for-android.git
-        cd python-for-android
+        git clone --depth=1 https://github.com/5tu7r7u/Flet-kivy/python_for_android.git
+        cd python_for_android
         git submodule update --init --recursive
 
     - name: Build with Buildozer
