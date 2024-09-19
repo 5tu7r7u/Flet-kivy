@@ -30,6 +30,19 @@ jobs:
         gstreamer1.0-plugins-good libffi-dev
         pip install buildozer cython==0.29.19
 
+    - name: Install Android SDK
+      run: |
+        sudo apt-get install -y wget unzip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+        mkdir -p $HOME/android-sdk
+        unzip commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk/cmdline-tools
+        yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+        
+    - name: Set up environment variables
+      run: |
+        echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/30.0.3:$PATH" >> $GITHUB_ENV
+
     - name: Build with Buildozer
       run: |
         buildozer -v android debug
