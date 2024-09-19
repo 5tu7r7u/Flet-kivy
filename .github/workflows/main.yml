@@ -32,7 +32,6 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        buildozer init
         buildozer -v android debug
 
     - name: Clean Buildozer cache
