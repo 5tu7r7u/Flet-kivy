@@ -41,6 +41,10 @@ jobs:
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30" "system-images;android-30;google_apis;x86_64" "extras;google;m2repository" "extras;android;m2repository" "cmdline-tools;latest"
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || echo "Failed to accept licenses"
 
+    - name: Install Aidl
+      run: |
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;30.0.3"
+
     - name: Set up environment variables
       run: |
         echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
