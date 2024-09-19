@@ -43,7 +43,8 @@ jobs:
 
     - name: Install Aidl
       run: |
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;30.0.3"
+        sudo apt-get update
+        sudo apt-get install -y aidl
 
     - name: Set up environment variables
       run: |
