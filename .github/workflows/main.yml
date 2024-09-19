@@ -1,4 +1,4 @@
-name: Android Build Workflow
+name: Build Android App
 
 on:
   push:
@@ -13,62 +13,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+    - name: Set up Python environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # استخدام أحدث إصدار من Python
 
-      # Install required dependencies
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y lib32z1 lib32ncurses6 libbz2-1.0 lib32stdc++6 openjdk-11-jdk
-          python -m pip install --upgrade pip
-          pip install --upgrade setuptools wheel
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev \
+        libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev \
+        libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0-0 gstreamer1.0-plugins-base \
+        gstreamer1.0-plugins-good libffi-dev
+        pip install buildozer cython==0.29.19
 
-      # Install Android SDK Command-line Tools
-      - name: Install Android SDK Command-line Tools
-        run: |
-          sudo apt-get install -y wget unzip
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
-          unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
-          export PATH=$HOME/android-sdk/cmdline-tools/cmdline-tools/bin:$PATH
-          yes | sdkmanager --licenses
-          sdkmanager "build-tools;30.0.3" "platforms;android-30"
+    - name: Build with Buildozer
+      run: |
+        buildozer init
+        buildozer -v android debug
 
-      # Install Buildozer
-      - name: Install Buildozer
-        run: |
-          pip install buildozer
-
-      # Build the Android APK
-      - name: Build APK
-        run: |
-          buildozer android debug
-
-      # Upload the APK as an artifact
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-apk
-          path: ./bin/*.apk
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Deploy steps (تخصيص خطوات النشر الخاصة بك)
-      - name: Deploy application
-        run: |
-          echo "Deploying application..."
+    - name: Clean Buildozer cache
+      run: buildozer android clean
