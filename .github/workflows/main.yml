@@ -38,8 +38,8 @@ jobs:
         unzip commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk/cmdline-tools
         mkdir -p $HOME/android-sdk/cmdline-tools/latest
         mv $HOME/android-sdk/cmdline-tools/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest
-        ls -l $HOME/android-sdk/cmdline-tools/latest/bin  # التحقق من وجود sdkmanager
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30" || echo "Failed to run sdkmanager"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30" "system-images;android-30;google_apis;x86_64" "extras;google;m2repository" "extras;android;m2repository"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || echo "Failed to accept licenses"
 
     - name: Set up environment variables
       run: |
