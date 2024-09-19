@@ -49,6 +49,8 @@ jobs:
     - name: Clone python-for-android repository
       run: |
         git clone --depth=1 https://github.com/kivy/python-for-android.git
+        cd python-for-android
+        git submodule update --init --recursive
 
     - name: Build with Buildozer
       run: |
